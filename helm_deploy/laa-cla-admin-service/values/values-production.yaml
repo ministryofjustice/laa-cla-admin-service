@@ -1,0 +1,19 @@
+# Default values for laa-cla-admin-service in the production environment.
+environment: "production"
+replicaCount: 4
+ingress:
+  enabled: true
+  host: "laa-cla-admin-service-production.cloud-platform.service.justice.gov.uk"
+  tls:
+    secretName: "tls-certificate"
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "ROUTE"
+    nginx.ingress.kubernetes.io/session-cookie-path: "/"
+    nginx.ingress.kubernetes.io/session-cookie-refresh: "true"
+    nginx.ingress.kubernetes.io/session-cookie-expires: "300"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "300"
+whitelist:
+  enabled: false
+
+envVars: {}

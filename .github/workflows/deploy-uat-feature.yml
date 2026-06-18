@@ -1,0 +1,82 @@
+name: Deploy feature branch image to UAT
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      ACCESS_ECR_REPOSITORY:
+        required: true
+        type: string
+      UAT_HOST_SUFFIX:
+        required: false
+        type: string
+        default: laa-cla-admin-service-uat.cloud-platform.service.justice.gov.uk
+    secrets:
+      ECR_REGISTRY:
+        required: true
+      KUBE_CERT:
+        required: true
+      KUBE_CLUSTER:
+        required: true
+      KUBE_TOKEN:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy
+    environment:
+      name: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout GitHub repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Authenticate to the cluster
+        env:
+          KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+          KUBE_NAMESPACE: ${{ github.event.repository.name }}-${{ inputs.environment }}
+        run: |
+          echo "${{ secrets.KUBE_CERT }}" > ca.crt
+          kubectl config set-cluster ${KUBE_CLUSTER} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER}
+          kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
+          kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
+          kubectl config use-context ${KUBE_CLUSTER}
+
+      - name: Fetch and set whitelist IP environment variables
+        run: |
+          SHARED_IP_RANGES_LAA=$(curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt | tr -d ' ' | tr '\n' ',' | sed 's/,/\\,/g' | sed 's/\\,$//')
+          PINGDOM_IPS=$(curl -s https://my.pingdom.com/probes/ipv4 | tr -d ' ' | tr '\n' ',' | sed 's/,/\\,/g' | sed 's/\\,$//')
+          echo "PINGDOM_IPS=$PINGDOM_IPS" >> $GITHUB_ENV
+          echo "SHARED_IP_RANGES_LAA=$SHARED_IP_RANGES_LAA" >> $GITHUB_ENV
+
+      - name: Upgrade the Helm chart with a branch-specific release name
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+          REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          REPOSITORY: ${{ inputs.ACCESS_ECR_REPOSITORY }}
+          HELM_DIR: helm_deploy/laa-cla-admin-service
+          SHARED_IP_RANGES_LAA: ${{ env.SHARED_IP_RANGES_LAA }}
+          KUBE_NAMESPACE: ${{ github.event.repository.name }}-${{ inputs.environment }}
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+          UAT_HOST_SUFFIX: ${{ inputs.UAT_HOST_SUFFIX }}
+        run: |
+          CLEANED_BRANCH_NAME=$(echo "${BRANCH_NAME}" | sed 's/^feature[-/]//' | sed 's:^[[:alnum:]_]*\/::' | tr -s ' _/[]().' '-' | tr '[:upper:]' '[:lower:]' | cut -c1-28 | sed 's/-$//')
+          HOST_NAME="${CLEANED_BRANCH_NAME}-${UAT_HOST_SUFFIX}"
+
+          helm upgrade ${CLEANED_BRANCH_NAME} \
+          ${HELM_DIR} \
+          --namespace=${KUBE_NAMESPACE} \
+          --values ${HELM_DIR}/values/values-${{ inputs.environment }}.yaml \
+          --set image.repository=${REGISTRY}/${REPOSITORY} \
+          --set image.tag=${IMAGE_TAG} \
+          --set fullnameOverride=${CLEANED_BRANCH_NAME} \
+          --set ingress.host=${HOST_NAME} \
+          --set sharedIPRangesLAA=$SHARED_IP_RANGES_LAA \
+          --set pingdomIPs=$PINGDOM_IPS \
+          --force \
+          --install

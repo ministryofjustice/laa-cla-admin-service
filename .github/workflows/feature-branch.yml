@@ -1,0 +1,35 @@
+name: Feature Branch
+
+run-name: Feature - ${{ github.head_ref || github.ref_name }}
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    types:
+      - reopened
+
+jobs:
+  build-and-push:
+    name: Build
+    uses: ./.github/workflows/build.yml
+    with:
+      ACCESS_ECR_REGION: ${{ vars.ACCESS_ECR_REGION }}
+      ACCESS_ECR_REPOSITORY: ${{ vars.ACCESS_ECR_REPOSITORY }}
+    secrets:
+      ACCESS_ECR_ROLE_TO_ASSUME: ${{ secrets.ACCESS_ECR_ROLE_TO_ASSUME }}
+
+  deploy-uat-feature:
+    name: UAT feature deploy
+    uses: ./.github/workflows/deploy-uat-feature.yml
+    needs: build-and-push
+    with:
+      environment: uat
+      ACCESS_ECR_REPOSITORY: ${{ vars.ACCESS_ECR_REPOSITORY }}
+      UAT_HOST_SUFFIX: ${{ vars.UAT_FEATURE_HOST_SUFFIX || 'laa-cla-admin-service-uat.cloud-platform.service.justice.gov.uk' }}
+    secrets:
+      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
