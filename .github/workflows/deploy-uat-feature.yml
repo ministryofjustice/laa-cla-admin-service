@@ -6,7 +6,7 @@ on:
       environment:
         required: true
         type: string
-      ACCESS_ECR_REPOSITORY:
+      CLA_ADMIN_SERVICE_ECR_REPOSITORY:
         required: true
         type: string
       UAT_HOST_SUFFIX:
@@ -14,7 +14,7 @@ on:
         type: string
         default: laa-cla-admin-service-uat.cloud-platform.service.justice.gov.uk
     secrets:
-      ECR_REGISTRY:
+      ECR_REGISTRY_URL:
         required: true
       KUBE_CERT:
         required: true
@@ -57,8 +57,8 @@ jobs:
       - name: Upgrade the Helm chart with a branch-specific release name
         env:
           IMAGE_TAG: ${{ github.sha }}
-          REGISTRY: ${{ secrets.ECR_REGISTRY }}
-          REPOSITORY: ${{ inputs.ACCESS_ECR_REPOSITORY }}
+          ECR_REGISTRY_URL: ${{ secrets.ECR_REGISTRY_URL }}
+          REPOSITORY: ${{ inputs.CLA_ADMIN_SERVICE_ECR_REPOSITORY }}
           HELM_DIR: helm_deploy/laa-cla-admin-service
           SHARED_IP_RANGES_LAA: ${{ env.SHARED_IP_RANGES_LAA }}
           KUBE_NAMESPACE: ${{ github.event.repository.name }}-${{ inputs.environment }}
@@ -72,7 +72,7 @@ jobs:
           ${HELM_DIR} \
           --namespace=${KUBE_NAMESPACE} \
           --values ${HELM_DIR}/values/values-${{ inputs.environment }}.yaml \
-          --set image.repository=${REGISTRY}/${REPOSITORY} \
+          --set image.repository=${ECR_REGISTRY_URL}/${REPOSITORY} \
           --set image.tag=${IMAGE_TAG} \
           --set fullnameOverride=${CLEANED_BRANCH_NAME} \
           --set ingress.host=${HOST_NAME} \

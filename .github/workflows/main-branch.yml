@@ -13,10 +13,10 @@ jobs:
     name: Build
     uses: ./.github/workflows/build.yml
     with:
-      ACCESS_ECR_REGION: ${{ vars.ACCESS_ECR_REGION }}
-      ACCESS_ECR_REPOSITORY: ${{ vars.ACCESS_ECR_REPOSITORY }}
+      CLA_ADMIN_SERVICE_ECR_REGION: ${{ secrets.CLA_ADMIN_SERVICE_ECR_REGION }}
+      CLA_ADMIN_SERVICE_ECR_REPOSITORY: ${{ vars.CLA_ADMIN_SERVICE_ECR_REPOSITORY }}
     secrets:
-      ACCESS_ECR_ROLE_TO_ASSUME: ${{ secrets.ACCESS_ECR_ROLE_TO_ASSUME }}
+      CLA_ADMIN_SERVICE_ECR_ROLE_TO_ASSUME: ${{ secrets.CLA_ADMIN_SERVICE_ECR_ROLE_TO_ASSUME }}
 
   deploy-uat:
     name: UAT
@@ -24,10 +24,10 @@ jobs:
     needs: build-and-push
     with:
       environment: uat
-      ACCESS_ECR_REPOSITORY: ${{ vars.ACCESS_ECR_REPOSITORY }}
+      CLA_ADMIN_SERVICE_ECR_REPOSITORY: ${{ vars.CLA_ADMIN_SERVICE_ECR_REPOSITORY }}
       DEPLOYMENT_URL: ${{ vars.UAT_DEPLOYMENT_URL }}
     secrets:
-      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      ECR_REGISTRY_URL: ${{ secrets.ECR_REGISTRY_URL }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
@@ -38,10 +38,10 @@ jobs:
     needs: deploy-uat
     with:
       environment: staging
-      ACCESS_ECR_REPOSITORY: ${{ vars.ACCESS_ECR_REPOSITORY }}
+      CLA_ADMIN_SERVICE_ECR_REPOSITORY: ${{ vars.CLA_ADMIN_SERVICE_ECR_REPOSITORY }}
       DEPLOYMENT_URL: ${{ vars.STAGING_DEPLOYMENT_URL }}
     secrets:
-      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      ECR_REGISTRY_URL: ${{ secrets.ECR_REGISTRY_URL }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
@@ -52,10 +52,10 @@ jobs:
     needs: deploy-staging
     with:
       environment: production
-      ACCESS_ECR_REPOSITORY: ${{ vars.ACCESS_ECR_REPOSITORY }}
+      CLA_ADMIN_SERVICE_ECR_REPOSITORY: ${{ vars.CLA_ADMIN_SERVICE_ECR_REPOSITORY }}
       DEPLOYMENT_URL: ${{ vars.PRODUCTION_DEPLOYMENT_URL }}
     secrets:
-      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      ECR_REGISTRY_URL: ${{ secrets.ECR_REGISTRY_URL }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}

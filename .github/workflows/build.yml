@@ -3,14 +3,14 @@ name: Build and Push image
 on:
   workflow_call:
     inputs:
-      ACCESS_ECR_REGION:
+      CLA_ADMIN_SERVICE_ECR_REGION:
         required: true
         type: string
-      ACCESS_ECR_REPOSITORY:
+      CLA_ADMIN_SERVICE_ECR_REPOSITORY:
         required: true
         type: string
     secrets:
-      ACCESS_ECR_ROLE_TO_ASSUME:
+      CLA_ADMIN_SERVICE_ECR_ROLE_TO_ASSUME:
         required: true
 
 jobs:
@@ -27,8 +27,8 @@ jobs:
       - name: Assume role in Cloud Platform
         uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
         with:
-          role-to-assume: ${{ secrets.ACCESS_ECR_ROLE_TO_ASSUME }}
-          aws-region: ${{ inputs.ACCESS_ECR_REGION }}
+          role-to-assume: ${{ secrets.CLA_ADMIN_SERVICE_ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ inputs.CLA_ADMIN_SERVICE_ECR_REGION }}
 
       - name: Login to container repository
         uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
