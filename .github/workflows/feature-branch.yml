@@ -15,7 +15,7 @@ jobs:
     name: Build
     uses: ./.github/workflows/build.yml
     with:
-      CLA_ADMIN_SERVICE_ECR_REGION: ${{ secrets.CLA_ADMIN_SERVICE_ECR_REGION }}
+      CLA_ADMIN_SERVICE_ECR_REGION: ${{ vars.CLA_ADMIN_SERVICE_ECR_REGION }}
       CLA_ADMIN_SERVICE_ECR_REPOSITORY: ${{ vars.CLA_ADMIN_SERVICE_ECR_REPOSITORY }}
     secrets:
       CLA_ADMIN_SERVICE_ECR_ROLE_TO_ASSUME: ${{ secrets.CLA_ADMIN_SERVICE_ECR_ROLE_TO_ASSUME }}
