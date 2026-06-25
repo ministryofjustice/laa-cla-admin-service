@@ -1,0 +1,16 @@
+# Default values for laa-cla-admin-service in the uat environment.
+environment: "uat"
+
+ingress:
+  enabled: true
+  host: "laa-cla-admin-service-uat.cloud-platform.service.justice.gov.uk"
+  tls:
+    secretName: "tls-certificate"
+
+whitelist:
+  enabled: true
+
+# Lists don't deep merge, so this map overrides anything defined in an earlier values file
+envVars:
+  DEBUG:
+    value: "True"

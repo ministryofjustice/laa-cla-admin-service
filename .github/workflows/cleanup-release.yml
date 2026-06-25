@@ -1,0 +1,35 @@
+name: Clean up feature release
+
+run-name: Clean up ${{ github.head_ref || github.ref_name }}
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  clean-up-release:
+    name: Clean up release
+    environment: uat
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Authenticate to the cluster
+        env:
+          KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+          KUBE_NAMESPACE: ${{ github.event.repository.name }}-uat
+        run: |
+          echo "${{ secrets.KUBE_CERT }}" > ca.crt
+          kubectl config set-cluster ${KUBE_CLUSTER} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER}
+          kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
+          kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
+          kubectl config use-context ${KUBE_CLUSTER}
+
+      - name: Uninstall the branch Helm release
+        env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+        run: |
+          CLEANED_BRANCH_NAME=$(echo "${BRANCH_NAME}" | sed 's/^feature[-/]//' | sed 's:^[[:alnum:]_]*\/::' | tr -s ' _/[]().' '-' | tr '[:upper:]' '[:lower:]' | cut -c1-28 | sed 's/-$//')
+          helm uninstall ${CLEANED_BRANCH_NAME}

@@ -1,0 +1,63 @@
+# Default values for laa-cla-admin-service.
+# These can be overwritten by values defined in environment specific values files.
+replicaCount: 1
+
+image:
+  repository: laa-cla-admin-service
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+  containerPort: 8000
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # We already have a serviceaccount so we don't want to create another.
+  create: false
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop: ["ALL"]
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "modsec"
+  cluster:
+    name: green
+    weight: '100'
+  tls: {}
+
+whitelist:
+  enabled: true
+
+resources: {}
+
+autoscaling:
+  enabled: false
+
+volumes: []
+
+volumeMounts: []
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+envVars: {}
