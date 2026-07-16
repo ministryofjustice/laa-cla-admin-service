@@ -118,7 +118,7 @@ The service is configured using environment variables. See `.env.example` for lo
 | Variable | Required | Description |
 |---|---:|---|
 | `DJANGO_SETTINGS_MODULE` | Yes | Django settings module to load |
-| `DJANGO_SECRET_KEY` | Yes | Secret used by Django for cryptographic signing |
+| `SECRET_KEY` | Yes | Secret used by Django for cryptographic signing |
 | `DJANGO_DEBUG` | No | Enables debug mode for local development |
 | `DJANGO_ALLOWED_HOSTS` | Yes | Comma-separated list of accepted hostnames |
 | `DATABASE_NAME` | Yes | PostgreSQL database name |

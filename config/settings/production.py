@@ -16,7 +16,7 @@ def required_env(name: str) -> str:
     return value
 
 
-SECRET_KEY = required_env("DJANGO_SECRET_KEY")
+SECRET_KEY = required_env("SECRET_KEY")
 
 DEBUG = False
 

@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from config.settings.production import required_env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,8 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-78hw(_n+%znzy=hfg1*hba=#=9(gd58z5bjq9da@@4w=_=1pxq"
+SECRET_KEY = required_env(
+    "SECRET_KEY", "django-insecure-!@#%&*()_+1234567890abcdefghijklmnopqrstuvwxyz"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -75,8 +79,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": required_env("DB_NAME"),
+        "USER": required_env("DB_USER"),
+        "PASSWORD": required_env("DB_PASSWORD"),
+        "HOST": required_env("DB_HOST"),
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 

@@ -36,7 +36,7 @@ COPY --chown=django:django . .
 # environment variables. These placeholder values satisfy settings validation;
 # no database connection is made during collectstatic.
 RUN DJANGO_SETTINGS_MODULE=config.settings.production \
-    DJANGO_SECRET_KEY=build-only-secret \
+    SECRET_KEY=build-only-secret \
     DJANGO_ALLOWED_HOSTS=localhost \
     DATABASE_NAME=build \
     DATABASE_USER=build \

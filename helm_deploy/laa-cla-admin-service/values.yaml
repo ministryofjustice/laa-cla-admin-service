@@ -60,4 +60,8 @@ tolerations: []
 
 affinity: {}
 
-envVars: {}
+envVars:
+  SECRET_KEY:
+    secret:
+      name: secret
+      key: value
