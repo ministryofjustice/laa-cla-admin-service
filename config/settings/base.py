@@ -22,10 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-SECRET_KEY = required_env(
-    "SECRET_KEY", "django-insecure-!@#%&*()_+1234567890abcdefghijklmnopqrstuvwxyz"
-)
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -76,6 +72,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+
+SECRET_KEY = required_env("SECRET_KEY")
 
 DATABASES = {
     "default": {
