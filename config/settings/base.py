@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
-from config.settings.production import required_env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -73,16 +72,17 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-SECRET_KEY = required_env("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-development-only")
+
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": required_env("DB_NAME"),
-        "USER": required_env("DB_USER"),
-        "PASSWORD": required_env("DB_PASSWORD"),
-        "HOST": required_env("DB_HOST"),
-        "PORT": os.getenv("DB_PORT", "5432"),
+        "NAME": os.environ.get("DB_NAME", "cla_admin"),
+        "USER": os.environ.get("DB_USER", "postgres"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
     }
 }
 
