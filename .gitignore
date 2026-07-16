@@ -1,10 +1,86 @@
+# Environment variables and secrets
+
 .env
-.terraform/
-coverage/
+.env.*
+!.env.example
+
+# Python virtual environments
+
 venv/
 env/
-.DS_STORE
-.vscode
-*.code-workspace
+.venv/
+
+# Python cache and compiled files
+
+**pycache**/
+*.py[cod]
+*$py.class
+
+# Python packaging
+
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+
+# Test, coverage, and lint caches
+
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+coverage/
+htmlcov/
+.tox/
+.nox/
+
+# Django
+
+*.log
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+
+# Uncomment if uploaded media should not be committed
+
+# media/
+
+# Terraform
+
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+.terraform.lock.hcl
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform-generated checksums or local artifacts
+
 *.sha256
-terraform.tfstate
+
+# IDEs and editors
+
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+
+# Operating system files
+
+.DS_Store
+Thumbs.db
+
+# Local development tools
+
+.python-version
+.direnv/
+.envrc
