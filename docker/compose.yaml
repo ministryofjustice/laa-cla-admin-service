@@ -17,6 +17,7 @@ services:
   db:
     image: postgres:17-alpine
     environment:
+      DATABASE_HOST: db
       POSTGRES_DB: cla_admin
       POSTGRES_USER: cla_admin
       POSTGRES_PASSWORD: cla_admin

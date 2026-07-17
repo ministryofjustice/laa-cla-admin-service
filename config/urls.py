@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from config.views import status
 
 admin.site.site_header = "Civil Legal Advice Administration"
@@ -26,4 +26,5 @@ admin.site.index_title = "Manage CLA services"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("status", status, name="status"),
+    path("reports/", include("apps.reports.urls")),
 ]

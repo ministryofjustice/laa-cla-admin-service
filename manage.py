@@ -10,7 +10,7 @@ def main():
 
     os.environ.setdefault(
         "DJANGO_SETTINGS_MODULE",
-        "config.settings.base",
+        "config.settings.local",
     )
 
     try:

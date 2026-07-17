@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block branding %}
+<div id="site-name">
+  <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
+</div>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}
+<nav style="background-color: #205067; padding: 6px 15px;">
+  <a href="{% url 'reports:index' %}" style="color: #fff; font-weight: bold;">Reports</a>
+</nav>
+{% endblock %}
