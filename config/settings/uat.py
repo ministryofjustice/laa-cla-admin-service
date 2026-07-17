@@ -9,6 +9,8 @@ SECRET_KEY = os.getenv(
     "django-insecure-local-development-only",
 )
 
+ALLOWED_HOSTS = ["*"]
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
