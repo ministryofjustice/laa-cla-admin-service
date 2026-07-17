@@ -30,6 +30,18 @@ spec:
       serviceAccountName: {{ include "laa-cla-admin-service.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: {{ .Chart.Name }}-migrations
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{ include "laa-cla-admin-service.app.vars" . | nindent 12 }}
+          command:
+            - sh
+            - -c
+            - python manage.py migrate && python manage.py create_local_admin
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

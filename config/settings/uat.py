@@ -1,0 +1,17 @@
+import os
+
+from .base import *  # noqa: F403
+
+DEBUG = True
+
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "django-insecure-local-development-only",
+)
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "/app/db.sqlite3",
+    }
+}

@@ -14,3 +14,13 @@ whitelist:
 envVars:
   DEBUG:
     value: "True"
+  DJANGO_SETTINGS_MODULE:
+    value: "config.settings.uat"
+  SECRET_KEY:
+    value: "django-insecure-uat-4x7!p2k9mq@z#r8vn$j5wl1&hs6yte3oc0"
+  ADMIN_USER:
+    value: "cla_admin"
+  ADMIN_PASSWORD:
+    value: "cla_admin_uat_temp"
+  ADMIN_EMAIL:
+    value: "cla_admin@uat.local"
