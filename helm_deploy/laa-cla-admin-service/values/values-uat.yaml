@@ -17,7 +17,11 @@ envVars:
   DJANGO_SETTINGS_MODULE:
     value: "config.settings.uat"
   SECRET_KEY:
+    # TEMPORARY: Non-production secret for UAT testing only
+    # TODO: Once UAT has a real DB, switch and use a K8s secret
     value: "django-insecure-uat-4x7!p2k9mq@z#r8vn$j5wl1&hs6yte3oc0"
+  # TEMPORARY: Admin credentials auto-created in SQLite for testing
+  # TODO: Remove these and use proper identity management once production DB is ready
   ADMIN_USER:
     value: "cla_admin"
   ADMIN_PASSWORD:
