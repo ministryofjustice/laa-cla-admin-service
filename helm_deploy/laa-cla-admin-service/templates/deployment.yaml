@@ -30,6 +30,9 @@ spec:
       serviceAccountName: {{ include "laa-cla-admin-service.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: data
+          emptyDir: {}
       initContainers:
         - name: {{ .Chart.Name }}-migrations
           securityContext:
@@ -38,6 +41,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             {{ include "laa-cla-admin-service.app.vars" . | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
           command:
             - sh
             - -c
@@ -50,6 +56,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             {{ include "laa-cla-admin-service.app.vars" . | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
           ports:
             - name: http
               containerPort: {{ .Values.image.containerPort }}

@@ -12,6 +12,6 @@ SECRET_KEY = os.getenv(
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "/app/db.sqlite3",
+        "NAME": "/app/data/db.sqlite3",
     }
 }
