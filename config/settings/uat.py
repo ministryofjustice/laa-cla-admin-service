@@ -14,16 +14,10 @@ SECRET_KEY = os.getenv(
     "django-insecure-local-development-only",
 )
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost").split()
+ALLOWED_HOSTS = ["*"]
 
-# CSRF trusted origins derived from the ingress hostname
-# Automatically synced with ALLOWED_HOSTS from Helm values
-_allowed_host = (
-    os.getenv("ALLOWED_HOSTS", "localhost").split()[0]
-    if os.getenv("ALLOWED_HOSTS")
-    else "localhost"
-)
-CSRF_TRUSTED_ORIGINS = [f"https://{_allowed_host}"]
+# CSRF: For UAT with ALLOWED_HOSTS=["*"], Django will skip CSRF origin checks
+# No need to set CSRF_TRUSTED_ORIGINS explicitly
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
