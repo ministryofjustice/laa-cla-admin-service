@@ -16,8 +16,11 @@ SECRET_KEY = os.getenv(
 
 ALLOWED_HOSTS = ["*"]
 
-# CSRF: For UAT with ALLOWED_HOSTS=["*"], Django will skip CSRF origin checks
-# No need to set CSRF_TRUSTED_ORIGINS explicitly
+# CSRF: For UAT, trust all Cloud Platform domains (includes dynamic release names)
+# Pattern matches lga-4146-setup-admin-service-laa-cla-admin-service-uat.cloud-platform.service.justice.gov.uk
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.cloud-platform.service.justice.gov.uk",
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
