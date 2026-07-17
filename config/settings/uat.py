@@ -14,7 +14,16 @@ SECRET_KEY = os.getenv(
     "django-insecure-local-development-only",
 )
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost").split()
+
+# CSRF trusted origins derived from the ingress hostname
+# Automatically synced with ALLOWED_HOSTS from Helm values
+_allowed_host = (
+    os.getenv("ALLOWED_HOSTS", "localhost").split()[0]
+    if os.getenv("ALLOWED_HOSTS")
+    else "localhost"
+)
+CSRF_TRUSTED_ORIGINS = [f"https://{_allowed_host}"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

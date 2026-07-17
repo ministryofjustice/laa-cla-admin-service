@@ -65,9 +65,19 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
+{{- define "laa-cla-admin-service.allowedHosts" -}}
+{{- if .Values.ingress.enabled -}}
+{{ .Values.ingress.host }}
+{{- else -}}
+localhost
+{{- end -}}
+{{- end -}}
+
 {{- define "laa-cla-admin-service.app.vars" -}}
 - name: CLA_ENVIRONMENT
   value: {{.Values.environment}}
+- name: ALLOWED_HOSTS
+  value: "{{ include "laa-cla-admin-service.allowedHosts" . }}"
 {{ range $name, $data := .Values.envVars }}
 - name: {{ $name }}
 {{- if $data.value }}
