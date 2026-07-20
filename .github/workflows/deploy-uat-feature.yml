@@ -65,8 +65,10 @@ jobs:
           BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
           UAT_HOST_SUFFIX: ${{ inputs.UAT_HOST_SUFFIX }}
         run: |
-          CLEANED_BRANCH_NAME=$(echo "${BRANCH_NAME}" | sed 's/^feature[-/]//' | sed 's:^[[:alnum:]_]*\/::' | tr -s ' _/[]().' '-' | tr '[:upper:]' '[:lower:]' | cut -c1-28 | sed 's/-$//')
-          HOST_NAME="${CLEANED_BRANCH_NAME}-${UAT_HOST_SUFFIX}"
+          export CLEANED_BRANCH_NAME=$(echo "${BRANCH_NAME}" | sed 's/^feature[-/]//' | sed 's:^[[:alnum:]_]*\/::' | tr -s ' _/[]().' '-' | tr '[:upper:]' '[:lower:]' | cut -c1-28 | sed 's/-$//')
+          export HOST_NAME=${CLEANED_BRANCH_NAME}-${UAT_HOST_SUFFIX}
+          export DEPLOYMENT_URL="https://${HOST_NAME}"
+          echo "DEPLOYMENT_URL=https://${HOST_NAME}" >> $GITHUB_ENV
 
           helm upgrade ${CLEANED_BRANCH_NAME} \
           ${HELM_DIR} \
