@@ -23,8 +23,10 @@ admin.site.site_header = "Civil Legal Advice Administration"
 admin.site.site_title = "CLA Admin"
 admin.site.index_title = "Manage CLA services"
 
+
+# `/admin` path should always be at the lowest priority to avoid conflicts with other apps that may use the `/admin` path.
 urlpatterns = [
+    path("admin/reports/", include("apps.reports.urls")),
     path("admin/", admin.site.urls),
     path("status", status, name="status"),
-    path("reports/", include("apps.reports.urls")),
 ]

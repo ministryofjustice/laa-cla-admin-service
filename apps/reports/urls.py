@@ -1,9 +1,21 @@
+from django.contrib import admin
 from django.urls import path
-from apps.reports import views
+
+from . import views
+
 
 app_name = "reports"
 
+
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("users/", views.users, name="users"),
+    path(
+        "",
+        admin.site.admin_view(views.index),
+        name="index",
+    ),
+    path(
+        "users/",
+        admin.site.admin_view(views.users_report),
+        name="users_report",
+    ),
 ]

@@ -1,26 +1,59 @@
 {% extends "admin/base_site.html" %}
+{% load i18n static reports_tags %}
 
-{% block content_title %}<h1>Reports</h1>{% endblock %}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}
+  {{ block.super }} dashboard
+{% endblock %}
 
 {% block content %}
-<div id="content-main">
-  <table>
-    <thead>
-      <tr>
-        <th>Report</th>
-        <th>Description</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for report in reports %}
-      <tr>
-        <td>{{ report.name }}</td>
-        <td>{{ report.description }}</td>
-        <td><a href="{% url report.url %}">View</a></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+  <div id="content-main" class="app-list">
+
+    {% report_links as reports %}
+
+    <div class="app-reports module current-app">
+      <table>
+        <caption>
+          <a href="{% url 'reports:index' %}" class="section">
+            {% translate "Available reports" %}
+          </a>
+        </caption>
+
+        <thead class="visually-hidden">
+          <tr>
+            <th scope="col">{% translate "Report" %}</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for report in reports %}
+            <tr class="model-report">
+              <th scope="row">
+                <a href="{{ report.url }}">
+                  {{ report.name }}
+                </a>
+              </th>
+              <td></td>
+              <td></td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3">
+                {% translate "No reports are currently available." %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 {% endblock %}

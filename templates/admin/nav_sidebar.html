@@ -1,0 +1,51 @@
+{% load i18n reports_tags %}
+
+<button
+  class="sticky toggle-nav-sidebar"
+  id="toggle-nav-sidebar"
+  aria-label="{% translate 'Toggle navigation' %}"
+></button>
+
+<nav
+  class="sticky"
+  id="nav-sidebar"
+  aria-label="{% translate 'Sidebar' %}"
+>
+  <input
+    type="search"
+    id="nav-filter"
+    placeholder="{% translate 'Start typing to filter…' %}"
+    aria-label="{% translate 'Filter navigation items' %}"
+  >
+
+  {% report_links as reports %}
+
+  {% if reports %}
+    <div class="app-reports module">
+      <table>
+        <caption>
+          <a
+            href="{% url 'reports:index' %}"
+            class="section"
+          >
+            Reports
+          </a>
+        </caption>
+
+        <tbody>
+          {% for report in reports %}
+            <tr class="model-report">
+              <th scope="row">
+                <a href="{{ report.url }}">
+                  {{ report.name }}
+                </a>
+              </th>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+  {% include "admin/app_list.html" with app_list=available_apps show_changelinks=False %}
+</nav>
