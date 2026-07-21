@@ -1,5 +1,10 @@
 name: Deploy feature branch image to UAT
 
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
 on:
   workflow_call:
     inputs:
@@ -65,18 +70,61 @@ jobs:
           BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
           UAT_HOST_SUFFIX: ${{ inputs.UAT_HOST_SUFFIX }}
         run: |
-          CLEANED_BRANCH_NAME=$(echo "${BRANCH_NAME}" | sed 's/^feature[-/]//' | sed 's:^[[:alnum:]_]*\/::' | tr -s ' _/[]().' '-' | tr '[:upper:]' '[:lower:]' | cut -c1-28 | sed 's/-$//')Add a comment on  line L68Add diff commentMarkdown input:  edit mode selected.WritePreviewHeadingBoldItalicQuoteCodeLinkUnordered listNumbered listTask listMentionReferenceMore Formatting tools items 0Saved repliesAdd FilesPaste, drop, or click to add filesCancelCommentStart a review
+          CLEANED_BRANCH_NAME=$(echo "${BRANCH_NAME}" \
+            | sed 's/^feature[-/]//' \
+            | sed 's:^[[:alnum:]_]*\/::' \
+            | tr -s ' _/[]().' '-' \
+            | tr '[:upper:]' '[:lower:]' \
+            | cut -c1-28 \
+            | sed 's/-$//')
+
           HOST_NAME="${CLEANED_BRANCH_NAME}-${UAT_HOST_SUFFIX}"
 
-          helm upgrade ${CLEANED_BRANCH_NAME} \
-          ${HELM_DIR} \
-          --namespace=${KUBE_NAMESPACE} \
-          --values ${HELM_DIR}/values/values-${{ inputs.environment }}.yaml \
-          --set image.repository=${ECR_REGISTRY_URL}/${REPOSITORY} \
-          --set image.tag=${IMAGE_TAG} \
-          --set fullnameOverride=${CLEANED_BRANCH_NAME} \
-          --set ingress.host=${HOST_NAME} \
-          --set sharedIPRangesLAA=$SHARED_IP_RANGES_LAA \
-          --set pingdomIPs=$PINGDOM_IPS \
-          --force \
-          --install
+          echo "DEPLOYMENT_URL=https://${HOST_NAME}" >> "$GITHUB_ENV"
+
+          helm upgrade "${CLEANED_BRANCH_NAME}" \
+            "${HELM_DIR}" \
+            --namespace="${KUBE_NAMESPACE}" \
+            --values "${HELM_DIR}/values/values-${{ inputs.environment }}.yaml" \
+            --set image.repository="${ECR_REGISTRY_URL}/${REPOSITORY}" \
+            --set image.tag="${IMAGE_TAG}" \
+            --set fullnameOverride="${CLEANED_BRANCH_NAME}" \
+            --set ingress.host="${HOST_NAME}" \
+            --set sharedIPRangesLAA="${SHARED_IP_RANGES_LAA}" \
+            --set pingdomIPs="${PINGDOM_IPS}" \
+            --force \
+            --install
+
+      - name: Post deployment comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s" "${GITHUB_SHA}" 2>/dev/null || echo "Latest changes")
+          MARKER="<!-- cla-admin-uat-deployment -->"
+
+          BODY="${MARKER}
+          ## 🚀 Ephemeral deployment successful
+
+          **Build:** [\`${SHORT_SHA}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) • ${COMMIT_MSG}
+
+          **View live site:** ${DEPLOYMENT_URL}
+
+          ---
+          *Deployed to ${{ inputs.environment }} by ${{ github.actor }} • [View workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*"
+
+          COMMENT_ID=$(gh api \
+            "repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
+            --paginate \
+            --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" \
+            | head -n 1)
+
+          if [ -n "${COMMENT_ID}" ]; then
+            gh api \
+              --method PATCH \
+              "repos/${{ github.repository }}/issues/comments/${COMMENT_ID}" \
+              -f body="${BODY}"
+          else
+            gh pr comment "${{ github.event.pull_request.number }}" \
+              --body "${BODY}"
+          fi
