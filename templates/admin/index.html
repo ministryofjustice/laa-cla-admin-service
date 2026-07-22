@@ -1,0 +1,104 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static log reports_tags %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link
+    rel="stylesheet"
+    href="{% static 'admin/css/dashboard.css' %}"
+  >
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+  <div id="content-main">
+    {% report_links as reports %}
+
+{% if reports and not app_label %}
+      <div class="app-reports module">
+        <table>
+          <caption>
+            <a
+              href="{% url 'reports:index' %}"
+              class="section"
+            >
+              Reports
+            </a>
+          </caption>
+
+          <tbody>
+            {% for report in reports %}
+              <tr class="model-report">
+                <th scope="row">
+                  <a href="{{ report.url }}">
+                    {{ report.name }}
+                  </a>
+                </th>
+
+                <td></td>
+                <td></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+    {% if app_list %}
+      {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+    {% else %}
+      <p>
+        {% translate "You don't have permission to view or edit anything." %}
+      </p>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block sidebar %}
+  <div id="content-related">
+    <div class="module" id="recent-actions-module">
+      <h2>{% translate "Recent actions" %}</h2>
+      <h3>{% translate "My actions" %}</h3>
+
+      {% get_admin_log 10 as admin_log for_user user %}
+
+      {% if not admin_log %}
+        <p>{% translate "None available" %}</p>
+      {% else %}
+        <ul class="actionlist">
+          {% for entry in admin_log %}
+            <li class="
+              {% if entry.is_addition %}addlink{% endif %}
+              {% if entry.is_change %}changelink{% endif %}
+              {% if entry.is_deletion %}deletelink{% endif %}
+            ">
+              {% if entry.is_deletion or not entry.get_admin_url %}
+                {{ entry.object_repr }}
+              {% else %}
+                <a href="{{ entry.get_admin_url }}">
+                  {{ entry.object_repr }}
+                </a>
+              {% endif %}
+
+              <br>
+
+              {% if entry.content_type %}
+                <span class="mini quiet">
+                  {{ entry.content_type.name|capfirst }}
+                </span>
+              {% else %}
+                <span class="mini quiet">
+                  {% translate "Unknown content" %}
+                </span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

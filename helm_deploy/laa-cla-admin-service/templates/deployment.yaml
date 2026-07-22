@@ -30,6 +30,26 @@ spec:
       serviceAccountName: {{ include "laa-cla-admin-service.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      # TEMPORARY: emptyDir volume for SQLite database until a dedicated DB instance is provisioned
+      # TODO: Remove this volume once UAT DB is ready - data will be persisted in RDS/PostgreSQL
+      volumes:
+        - name: data
+          emptyDir: {}
+      initContainers:
+        - name: {{ .Chart.Name }}-migrations
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{ include "laa-cla-admin-service.app.vars" . | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          command:
+            - sh
+            - -c
+            - python manage.py collectstatic --noinput && python manage.py migrate && python manage.py create_local_admin
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -38,6 +58,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             {{ include "laa-cla-admin-service.app.vars" . | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
           ports:
             - name: http
               containerPort: {{ .Values.image.containerPort }}
@@ -46,7 +69,13 @@ spec:
             httpGet:
               path: /status
               port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.ingress.host | quote }}
           readinessProbe:
             httpGet:
               path: /status
               port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.ingress.host | quote }}

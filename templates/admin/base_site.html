@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block branding %}
+  <div id="site-name" style="display: flex; align-items: center; gap: 0.75rem;">
+    <div style="width: 40px; height: 40px; flex-shrink: 0;">
+      {% include "components/moj_crest.html" %}
+    </div>
+
+    <a href="{% url 'admin:index' %}">
+      {{ site_header|default:_("Django administration") }}
+    </a>
+  </div>
+{% endblock %}

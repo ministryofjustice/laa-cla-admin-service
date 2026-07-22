@@ -1,0 +1,44 @@
+{% extends "admin/base_site.html" %}
+
+{% block content_title %}<h1>Users Report</h1>{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <div style="margin-bottom: 1em;">
+    <a href="{% url 'reports:index' %}">← Back to Reports</a>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Active</th>
+        <th>Staff</th>
+        <th>Date joined</th>
+        <th>Last login</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.is_active|yesno:"Yes,No" }}</td>
+        <td>{{ user.is_staff|yesno:"Yes,No" }}</td>
+        <td>{{ user.date_joined|date:"d M Y H:i" }}</td>
+        <td>{{ user.last_login|date:"d M Y H:i"|default:"Never" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8">No users found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
