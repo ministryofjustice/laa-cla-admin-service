@@ -7,14 +7,18 @@ from .base import MIDDLEWARE as BASE_MIDDLEWARE
 # TODO: Once UAT DB is ready, replace this file with correct pattern
 # and configure DATABASE_* env vars in helm_deploy/laa-cla-admin-service/values/values-uat.yaml
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False").strip().lower() in {"1", "true", "yes", "on"}
 
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
     "django-insecure-local-development-only",
 )
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", "").replace(",", " ").split()
+    if host.strip()
+]
 
 # CSRF: For UAT, trust all Cloud Platform domains (includes dynamic release names)
 # Pattern matches lga-4146-setup-admin-service-laa-cla-admin-service-uat.cloud-platform.service.justice.gov.uk

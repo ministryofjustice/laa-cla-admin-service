@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "laa-cla-admin-service"
 version = "0.1.0"
 description = "Django administration service for Civil Legal Advice"
-requires-python = ">=3.13,<3.15"
+requires-python = ">=3.14,<3.15"
 dependencies = [
     "Django>=5.2,<5.3",
     "gunicorn>=23,<24",
@@ -38,4 +38,4 @@ python_files = ["test_*.py"]
 
 [tool.ruff]
 line-length = 88
-target-version = "py313"
+target-version = "py314"

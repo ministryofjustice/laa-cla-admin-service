@@ -38,4 +38,4 @@ runs:
         DATABASE_PASSWORD: ${{ inputs.DB_PASSWORD }}
         DJANGO_SETTINGS_MODULE: config.settings.local
         SECRET_KEY: ci-only-secret
-        DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+        ALLOWED_HOSTS: localhost,127.0.0.1

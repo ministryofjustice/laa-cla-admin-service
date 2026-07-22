@@ -37,7 +37,7 @@ COPY --chown=django:django . .
 # no database connection is made during collectstatic.
 RUN DJANGO_SETTINGS_MODULE=config.settings.production \
     SECRET_KEY=build-only-secret \
-    DJANGO_ALLOWED_HOSTS=localhost \
+    ALLOWED_HOSTS=localhost \
     DATABASE_NAME=build \
     DATABASE_USER=build \
     DATABASE_PASSWORD=build \

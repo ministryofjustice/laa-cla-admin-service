@@ -56,12 +56,12 @@ For the recommended Docker-based setup:
 
 A local Python installation is not required when using Docker.
 
-For development outside Docker, use the supported Python version declared in `pyproject.toml`.
+For development outside Docker, use Python 3.14 (as declared in `pyproject.toml`).
 ## Local setup
 
 Run:
 
-    .local-setup.sh
+    ./local-setup.sh
 
 The setup script:
 
@@ -119,8 +119,8 @@ The service is configured using environment variables. See `.env.example` for lo
 |---|---:|---|
 | `DJANGO_SETTINGS_MODULE` | Yes | Django settings module to load |
 | `SECRET_KEY` | Yes | Secret used by Django for cryptographic signing |
-| `DJANGO_DEBUG` | No | Enables debug mode for local development |
-| `DJANGO_ALLOWED_HOSTS` | Yes | Comma-separated list of accepted hostnames |
+| `DEBUG` | No | Enables debug mode when set to a truthy value (`1`, `true`, `yes`, `on`) |
+| `ALLOWED_HOSTS` | Yes | Comma-separated or whitespace-separated list of accepted hostnames |
 | `DATABASE_NAME` | Yes | PostgreSQL database name |
 | `DATABASE_USER` | Yes | PostgreSQL username |
 | `DATABASE_PASSWORD` | Yes | PostgreSQL password |
