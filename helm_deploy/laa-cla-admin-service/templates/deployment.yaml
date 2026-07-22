@@ -69,7 +69,13 @@ spec:
             httpGet:
               path: /status
               port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.ingress.host | quote }}
           readinessProbe:
             httpGet:
               path: /status
               port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.ingress.host | quote }}
