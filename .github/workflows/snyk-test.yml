@@ -1,0 +1,27 @@
+---
+name: Snyk Test
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions: {}
+
+jobs:
+  snyk-test:
+    name: Snyk code and dependency test
+    uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/snyk-test.yml@fa4f700fdaa70cf4a806bd0047b258bc559424d3 # main
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    with:
+      snyk_args: --severity-threshold=high --all-projects
+      fail_on_issues: true
+      upload_sarif: true
+    secrets:
+      snyk_token: ${{ secrets.SNYK_TOKEN }}
