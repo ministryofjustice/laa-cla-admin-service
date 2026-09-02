@@ -30,4 +30,5 @@ urlpatterns = [
     path("admin/reports/", include("apps.reports.urls")),
     path("admin/", admin.site.urls),
     path("status", status, name="status"),
+    path('oauth2/', include('django_entra_auth.urls')),
 ]

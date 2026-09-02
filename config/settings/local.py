@@ -16,6 +16,6 @@ DATABASES = {
         "USER": os.getenv("DATABASE_USER", "cla_admin"),
         "PASSWORD": os.getenv("DATABASE_PASSWORD", "cla_admin"),
         "HOST": os.getenv("DATABASE_HOST", "localhost"),
-        "PORT": os.getenv("DATABASE_PORT", "5432"),
+        "PORT": os.getenv("DATABASE_PORT", "5433"),
     }
 }

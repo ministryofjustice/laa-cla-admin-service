@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_entra_auth",
     "apps.cla_auth",
     "apps.reports",
 ]
@@ -131,6 +132,33 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+AUTHENTICATION_BACKENDS = ('apps.cla_auth.entra_backend.EntraBackend',)
+ENTRA_AUTH = {
+    "USERNAME_CLAIM": "USER_NAME",
+    "BLOCK_GUEST_USERS": True,
+    "VERSION": "v2.0",
+    "SCOPES": os.environ.get("ENTRA_SCOPE", "").split(","),
+    "CLIENT_ID": os.environ.get("ENTRA_CLIENT_ID", ""),
+    "CLIENT_SECRET": os.environ.get("ENTRA_CLIENT_SECRET", ""),
+    "TENANT_ID": os.environ.get("ENTRA_TENANT_ID", ""),
+    "RELYING_PARTY_ID": os.environ.get("ENTRA_TENANT_ID", ""),
+    # The audience should be your application ID
+    "AUDIENCE": os.environ.get("ENTRA_AUDIENCE", ""),
+    # Map Entra ID claims to Django user fields
+    "CLAIM_MAPPING": {
+        "first_name": "CLA_FIRST_NAME",
+        "last_name": "CLA_LAST_NAME",
+        "email": "USER_EMAIL"
+    },
+    # Optional: Enable group synchronization
+    "GROUPS_CLAIM": "APP_ROLES",
+    "MIRROR_GROUPS": True,
+}
+# Configure Django to use Entra ID login
+LOGIN_URL = "django_entra_auth:login"
+LOGIN_REDIRECT_URL = "/"
