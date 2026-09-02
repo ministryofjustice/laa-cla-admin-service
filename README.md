@@ -57,6 +57,12 @@ For the recommended Docker-based setup:
 A local Python installation is not required when using Docker.
 
 For development outside Docker, use Python 3.14 (as declared in `pyproject.toml`).
+
+Create local settings file
+```
+cp config/settings/example.local.py config/settings/local.py
+```
+
 ## Local setup
 
 Run:
