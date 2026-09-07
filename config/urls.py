@@ -18,6 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from apps.cla_auth.views import DebugView
 from config.views import status
 
 admin.site.site_header = "Civil Legal Advice Administration"
@@ -28,6 +29,7 @@ admin.site.index_title = "Manage CLA services"
 # `/admin` path should always be at the lowest priority to avoid conflicts with other apps that may use the `/admin` path.
 urlpatterns = [
     path("admin/reports/", include("apps.reports.urls")),
+    path("cla-auth/", DebugView.as_view(), name="cla-auth"),
     path("admin/", admin.site.urls),
     path("status", status, name="status"),
     path("oauth2/", include("django_entra_auth.urls")),
