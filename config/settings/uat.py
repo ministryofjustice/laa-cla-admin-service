@@ -1,4 +1,5 @@
 from .base import *
+import os
 
 # TEMPORARY: UAT-specific settings using SQLite until a dedicated DB instance is provisioned
 # TODO: Once UAT DB is ready, replace this file with correct pattern

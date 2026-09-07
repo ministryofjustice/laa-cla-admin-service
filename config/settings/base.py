@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -131,8 +130,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -152,7 +149,7 @@ ENTRA_AUTH = {
     "CLAIM_MAPPING": {
         "first_name": "CLA_FIRST_NAME",
         "last_name": "CLA_LAST_NAME",
-        "email": "USER_EMAIL"
+        "email": "USER_EMAIL",
     },
     # Optional: Enable group synchronization
     "GROUPS_CLAIM": "APP_ROLES",

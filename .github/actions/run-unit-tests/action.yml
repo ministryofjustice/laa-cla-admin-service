@@ -36,6 +36,6 @@ runs:
         DATABASE_NAME: ${{ inputs.DB_NAME }}
         DATABASE_USER: ${{ inputs.DB_USERNAME }}
         DATABASE_PASSWORD: ${{ inputs.DB_PASSWORD }}
-        DJANGO_SETTINGS_MODULE: config.settings.local
+        DJANGO_SETTINGS_MODULE: config.settings.production
         SECRET_KEY: ci-only-secret
         ALLOWED_HOSTS: localhost,127.0.0.1

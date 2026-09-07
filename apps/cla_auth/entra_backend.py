@@ -1,8 +1,9 @@
 import uuid
-from django.core.exceptions import PermissionDenied
-from django_entra_auth.backend import  AdfsAuthCodeBackend
-from django_entra_auth.config import settings
+
 from django.contrib.auth import get_user_model
+from django.core.exceptions import PermissionDenied
+from django_entra_auth.backend import AdfsAuthCodeBackend
+from django_entra_auth.config import settings
 
 
 class EntraBackend(AdfsAuthCodeBackend):
@@ -17,16 +18,14 @@ class EntraBackend(AdfsAuthCodeBackend):
             django.contrib.auth.models.User: A Django user
         """
 
-
         # Guard against wrong tenant id
         if claims.get("tid") != settings.TENANT_ID:
             raise PermissionDenied("Entra - Invalid Tenant ID")
 
-
         user_model = get_user_model()
-        email = claims.get('USER_EMAIL')
+        email = claims.get("USER_EMAIL")
         if not email:
-            raise PermissionDenied('Entra - Email address is required')
+            raise PermissionDenied("Entra - Email address is required")
 
         try:
             user = user_model.objects.get(email=email)
@@ -34,14 +33,17 @@ class EntraBackend(AdfsAuthCodeBackend):
             if settings.CREATE_NEW_USERS:
                 user_data = {
                     "email": email,
-                    user_model.USERNAME_FIELD: self._generate_unique_username(user_model, email),
-                    "is_staff": True, # This service only caters for admin staff
-                    "is_active": True
+                    user_model.USERNAME_FIELD: self._generate_unique_username(
+                        user_model, email
+                    ),
+                    "is_staff": True,  # This service only caters for admin staff
+                    "is_active": True,
                 }
                 return user_model.objects.create_user(**user_data)
-            raise PermissionDenied('Entra - User does not exist and user creation is disabled')
+            raise PermissionDenied(
+                "Entra - User does not exist and user creation is disabled"
+            )
         return user
-
 
     @staticmethod
     def _generate_unique_username(user_model, email):
@@ -59,9 +61,8 @@ class EntraBackend(AdfsAuthCodeBackend):
                 return username
         return base[:20] + uuid.uuid4().hex[:7]
 
-
     def validate_access_token(self, access_token):
-        claims = super(EntraBackend, self).validate_access_token(access_token)
+        claims = super().validate_access_token(access_token)
 
         # Create custom claims for first and last name
         # The format of name is [DEPARTMENT] - [APPLICATION] First Lastname
@@ -72,9 +73,10 @@ class EntraBackend(AdfsAuthCodeBackend):
             claims["CLA_LAST_NAME"] = " ".join(names)
 
         # Make sure claims[settings.GROUPS_CLAIM] is always a list
-        if settings.GROUPS_CLAIM in claims:
-            if not isinstance(claims[settings.GROUPS_CLAIM], list):
-                claims[settings.GROUPS_CLAIM] = [claims[settings.GROUPS_CLAIM]]
+        if settings.GROUPS_CLAIM in claims and not isinstance(
+            claims[settings.GROUPS_CLAIM], list
+        ):
+            claims[settings.GROUPS_CLAIM] = [claims[settings.GROUPS_CLAIM]]
 
         # Remove service name prefix from role names
         roles = []
@@ -85,4 +87,3 @@ class EntraBackend(AdfsAuthCodeBackend):
             claims[settings.GROUPS_CLAIM] = roles
 
         return claims
-
