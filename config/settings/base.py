@@ -139,16 +139,15 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 AUTHENTICATION_BACKENDS = ('apps.cla_auth.entra_backend.EntraBackend',)
 ENTRA_AUTH = {
-    "USERNAME_CLAIM": "USER_NAME",
     "BLOCK_GUEST_USERS": True,
     "VERSION": "v2.0",
-    "SCOPES": os.environ.get("ENTRA_SCOPE", "").split(","),
+    "SCOPES": os.environ.get("ENTRA_SCOPES", "").split(","),
     "CLIENT_ID": os.environ.get("ENTRA_CLIENT_ID", ""),
     "CLIENT_SECRET": os.environ.get("ENTRA_CLIENT_SECRET", ""),
     "TENANT_ID": os.environ.get("ENTRA_TENANT_ID", ""),
     "RELYING_PARTY_ID": os.environ.get("ENTRA_TENANT_ID", ""),
     # The audience should be your application ID
-    "AUDIENCE": os.environ.get("ENTRA_AUDIENCE", ""),
+    "AUDIENCE": os.environ.get("ENTRA_CLIENT_ID", ""),
     # Map Entra ID claims to Django user fields
     "CLAIM_MAPPING": {
         "first_name": "CLA_FIRST_NAME",
