@@ -161,4 +161,4 @@ ENTRA_AUTH = {
 }
 # Configure Django to use Entra ID login
 LOGIN_URL = "django_entra_auth:login"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/admin"
