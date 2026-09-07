@@ -83,7 +83,8 @@ if AWS_STORAGE_BUCKET_NAME:
 
 
 WSGI_APPLICATION = "config.wsgi.application"
-
+# https://docs.djangoproject.com/en/6.1/ref/settings/#std-setting-SECURE_PROXY_SSL_HEADER
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
