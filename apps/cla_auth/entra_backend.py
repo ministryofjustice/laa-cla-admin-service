@@ -1,9 +1,20 @@
 import uuid
 
+from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings as django_settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django_entra_auth.backend import AdfsAuthCodeBackend
-from django_entra_auth.config import settings
+from django_entra_auth.config import Settings, settings
+
+
+class EntraSettings(Settings):
+    def __init__(self):
+        try:
+            super(EntraSettings, self).__init__()
+        except ImproperlyConfigured as err:
+            if not hasattr(django_settings, "TESTING"):
+                raise err
 
 
 class EntraBackend(AdfsAuthCodeBackend):
