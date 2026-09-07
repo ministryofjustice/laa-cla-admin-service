@@ -1,6 +1,5 @@
 import os
-
-from .base import *  # noqa: F403
+from .base import *
 
 DEBUG = True
 TESTING = True
@@ -17,6 +16,8 @@ DATABASES = {
         "USER": os.getenv("DATABASE_USER", "cla_admin"),
         "PASSWORD": os.getenv("DATABASE_PASSWORD", "cla_admin"),
         "HOST": os.getenv("DATABASE_HOST", "localhost"),
-        "PORT": os.getenv("DATABASE_PORT", "5432"),
+        "PORT": os.getenv("DATABASE_PORT", "5433"),
     }
 }
+
+ENTRA_AUTH["SETTINGS_CLASS"] = "apps.cla_auth.tests.entra_settings.TestEntraSettings"
