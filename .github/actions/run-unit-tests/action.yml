@@ -33,6 +33,7 @@ runs:
       shell: bash
       env:
         DATABASE_HOST: ${{ inputs.DB_HOST }}
+        DATABASE_PORT: 5432
         DATABASE_NAME: ${{ inputs.DB_NAME }}
         DATABASE_USER: ${{ inputs.DB_USERNAME }}
         DATABASE_PASSWORD: ${{ inputs.DB_PASSWORD }}
