@@ -23,6 +23,8 @@ spec:
       serviceAccountName: {{ include "laa-cla-admin-service.serviceAccountName" . }}
       containers:
         - name: collect-static
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["python", "manage.py", "collectstatic", "--noinput"]
