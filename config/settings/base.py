@@ -71,6 +71,7 @@ TEMPLATES = [
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STATIC_FILES_STORAGE_BUCKET_NAME")
 
 if AWS_STORAGE_BUCKET_NAME:
+    AWS_LOCATION = "static"
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.s3.S3Storage",
