@@ -71,7 +71,6 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STATIC_FILES_STORAGE_BUCKET_NAME")
 
 if AWS_STORAGE_BUCKET_NAME:
     STORAGES = {
-        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
         "staticfiles": {"BACKEND": "storages.backends.s3.S3Storage"},
     }
 
