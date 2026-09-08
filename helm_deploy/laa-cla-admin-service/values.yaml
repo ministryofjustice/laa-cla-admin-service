@@ -16,6 +16,7 @@ fullnameOverride: ""
 serviceAccount:
   # We already have a serviceaccount so we don't want to create another.
   create: false
+  name: irsa-sevice-account
 
 podAnnotations: {}
 podLabels: {}
@@ -65,3 +66,11 @@ envVars:
     secret:
       name: secret
       key: value
+  AWS_STATIC_FILES_STORAGE_BUCKET_NAME:
+    secret:
+      name: s3
+      key: static_files_bucket_name
+  CLOUDFRONT_URL:
+    secret:
+      name: cloudfront-static-assets
+      key: cloudfront_url
