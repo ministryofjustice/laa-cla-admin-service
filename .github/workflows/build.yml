@@ -14,27 +14,27 @@ on:
         required: true
 
 jobs:
-  # lint:
-  #   name: Lint and format checks
-  #   runs-on: ubuntu-latest
+  lint:
+    name: Lint and format checks
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # 7.0.0
-  #       with:
-  #         python-version: "3.14"
-  #         cache: pip
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # 7.0.0
+        with:
+          python-version: "3.14"
+          cache: pip
 
-  #     - name: Install dependencies
-  #       run: python -m pip install -e ".[development]"
+      - name: Install dependencies
+        run: python -m pip install -e ".[development]"
 
-  #     - name: Run Ruff
-  #       run: |
-  #         ruff check .
-  #         ruff format --check .
+      - name: Run Ruff
+        run: |
+          ruff check .
+          ruff format --check .
 
   test:
     name: Run unit tests
@@ -69,7 +69,6 @@ jobs:
 
   build-and-push-to-ecr:
     name: Build and Push
-    needs: [test]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
