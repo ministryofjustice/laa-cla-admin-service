@@ -59,9 +59,9 @@ Create the name of the service account to use
 */}}
 {{- define "laa-cla-admin-service.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "laa-cla-admin-service.fullname" .) .Values.serviceAccount.name }}
+{{ default (include "laa-cla-admin-service.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
-    {{.Release.Namespace }}-{{.Values.serviceAccount.name }}
+{{- default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
