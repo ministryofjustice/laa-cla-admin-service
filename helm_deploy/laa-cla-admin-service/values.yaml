@@ -64,7 +64,7 @@ affinity: {}
 envVars:
   SECRET_KEY:
     secret:
-      name: secret
+      name: secret-key
       key: value
   AWS_STATIC_FILES_STORAGE_BUCKET_NAME:
     secret:
