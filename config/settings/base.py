@@ -67,16 +67,20 @@ TEMPLATES = [
     },
 ]
 
-# AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STATIC_FILES_STORAGE_BUCKET_NAME")
-#
-# if AWS_STORAGE_BUCKET_NAME:
-#     STORAGES = {
-#         "staticfiles": {"BACKEND": "storages.backends.s3.S3Storage"},
-#     }
-#
-#     AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "eu-west-2")
-#     AWS_S3_CUSTOM_DOMAIN = os.environ.get("CLOUDFRONT_URL") or None
-#     AWS_QUERYSTRING_AUTH = False
+
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STATIC_FILES_STORAGE_BUCKET_NAME")
+
+if AWS_STORAGE_BUCKET_NAME:
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+        },
+    }
+    AWS_S3_REGION_NAME = os.environ.get("AWS_REGION", "eu-west-2")
+    AWS_S3_CUSTOM_DOMAIN = os.environ.get("CLOUDFRONT_URL") or None
 
 
 WSGI_APPLICATION = "config.wsgi.application"
