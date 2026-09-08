@@ -16,7 +16,7 @@ fullnameOverride: ""
 serviceAccount:
   # We already have a serviceaccount so we don't want to create another.
   create: false
-  name: irsa-service-account
+  name: irsa-sevice-account
 
 podAnnotations: {}
 podLabels: {}
