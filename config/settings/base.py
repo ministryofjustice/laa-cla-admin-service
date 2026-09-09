@@ -22,13 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -66,6 +64,23 @@ TEMPLATES = [
         },
     },
 ]
+
+
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STATIC_FILES_STORAGE_BUCKET_NAME")
+
+if AWS_STORAGE_BUCKET_NAME:
+    AWS_LOCATION = "static"
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+        },
+    }
+    AWS_S3_REGION_NAME = os.environ.get("AWS_REGION", "eu-west-2")
+    AWS_S3_CUSTOM_DOMAIN = os.environ.get("CLOUDFRONT_URL") or None
+
 
 WSGI_APPLICATION = "config.wsgi.application"
 
@@ -114,3 +129,8 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
