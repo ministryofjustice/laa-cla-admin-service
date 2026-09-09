@@ -2,7 +2,7 @@ import os
 
 from django.core.exceptions import ImproperlyConfigured
 
-from .base import *  # noqa: F403
+from .base import *
 
 
 def required_env(name: str) -> str:
@@ -18,8 +18,6 @@ def required_env(name: str) -> str:
 
 SECRET_KEY = required_env("SECRET_KEY")
 
-DEBUG = False
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -31,7 +29,3 @@ DATABASES = {
         "CONN_MAX_AGE": 60,
     }
 }
-
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
