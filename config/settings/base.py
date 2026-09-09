@@ -135,7 +135,7 @@ SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-AUTHENTICATION_BACKENDS = ('apps.cla_auth.entra_backend.EntraBackend',)
+AUTHENTICATION_BACKENDS = ("apps.cla_auth.entra_backend.EntraBackend",)
 ENTRA_AUTH = {
     "BLOCK_GUEST_USERS": True,
     "VERSION": "v2.0",
