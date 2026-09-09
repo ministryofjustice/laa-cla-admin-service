@@ -83,8 +83,6 @@ if AWS_STORAGE_BUCKET_NAME:
 
 
 WSGI_APPLICATION = "config.wsgi.application"
-# https://docs.djangoproject.com/en/6.1/ref/settings/#std-setting-SECURE_PROXY_SSL_HEADER
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -125,7 +123,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -133,6 +130,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+# https://docs.djangoproject.com/en/6.1/ref/settings/#std-setting-SECURE_PROXY_SSL_HEADER
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 AUTHENTICATION_BACKENDS = ("apps.cla_auth.entra_backend.EntraBackend",)

@@ -47,6 +47,13 @@ class EntraBackend(AdfsAuthCodeBackend):
 
     @staticmethod
     def _generate_unique_username(user_model, email):
+        """
+        Generate a unique username by taking name portion of the email.
+        if the name portion forms a non-existent username then use that as the username
+        if we cannot use the name portion of the email then add number suffix to and if that makes a non-existent
+            username then use that as the username
+        Otherwise generate a uuid and suffix that to the username
+        """
         username_field = getattr(user_model, user_model.USERNAME_FIELD)
         max_length = username_field.field.max_length
         base = email.split("@")[0][:max_length].lower()

@@ -1,8 +1,9 @@
 import os
+
+os.environ.setdefault("DEBUG", "True")
+
 from .base import *
 
-
-DEBUG = True
 
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
