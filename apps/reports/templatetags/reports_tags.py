@@ -6,7 +6,6 @@ from django.urls import reverse
 
 from apps.reports.urls import urlpatterns
 
-
 register = template.Library()
 
 
