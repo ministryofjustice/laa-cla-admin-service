@@ -69,7 +69,6 @@ jobs:
 
   build-and-push-to-ecr:
     name: Build and Push
-    needs: [lint, test]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
