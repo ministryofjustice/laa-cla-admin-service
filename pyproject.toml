@@ -12,6 +12,7 @@ dependencies = [
     "gunicorn>=23,<27",
     "psycopg[binary]>=3.2,<4",
     "whitenoise>=6.6,<7",
+    "django-storages[s3]"
 ]
 
 [project.optional-dependencies]
@@ -40,3 +41,7 @@ python_files = ["test_*.py"]
 [tool.ruff]
 line-length = 88
 target-version = "py314"
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*.py" = ["E501", "RUF012"]
+"config/settings/*.py" = ["N999", "F405", "F403", "I001"]
