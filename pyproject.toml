@@ -8,17 +8,18 @@ version = "0.1.0"
 description = "Django administration service for Civil Legal Advice"
 requires-python = ">=3.14,<3.15"
 dependencies = [
-    "django-entra-auth==1.16.1",
-    "Django>=5.2,<5.3",
+    "Django>=5.2,<6.1",
     "gunicorn>=23,<27",
     "psycopg[binary]>=3.2,<4",
     "whitenoise>=6.6,<7",
-    "django-storages[s3]"
+    "django-storages[s3]",
+    "django-entra-auth==1.16.1",
 ]
 
 [project.optional-dependencies]
 development = [
-    "pre-commit==4.6.0",
+    "pre-commit==4.6.1",
+    "pytest>=8,<9",
     "pytest>=8,<10",
     "pytest-django>=4.11,<5",
     "ruff>=0.12,<1",
