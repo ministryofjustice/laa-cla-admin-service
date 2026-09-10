@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from config.views import status
+from config.views import home, status
 
 admin.site.site_header = "Civil Legal Advice Administration"
 admin.site.site_title = "CLA Admin"
@@ -27,6 +27,7 @@ admin.site.index_title = "Manage CLA services"
 
 # `/admin` path should always be at the lowest priority to avoid conflicts with other apps that may use the `/admin` path.
 urlpatterns = [
+    path("", home, name="home"),
     path("admin/reports/", include("apps.reports.urls")),
     path("admin/", admin.site.urls),
     path("status", status, name="status"),

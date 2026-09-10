@@ -154,6 +154,7 @@ ENTRA_AUTH = {
     # Optional: Enable group synchronization
     "GROUPS_CLAIM": "APP_ROLES",
     "MIRROR_GROUPS": True,
+    "LOGIN_EXEMPT_URLS": ["/", "status"],
 }
 # Configure Django to use Entra ID login
 LOGIN_URL = "django_entra_auth:login"
