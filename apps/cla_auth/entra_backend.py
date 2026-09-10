@@ -71,14 +71,6 @@ class EntraBackend(AdfsAuthCodeBackend):
     def validate_access_token(self, access_token):
         claims = super().validate_access_token(access_token)
 
-        # Create custom claims for first and last name
-        # The format of name is [DEPARTMENT] - [APPLICATION] First Lastname
-        names = claims.get("name", "").split("]").pop().strip().split(" ")
-        if names:
-            claims["CLA_FIRST_NAME"] = names.pop(0)
-        if names:
-            claims["CLA_LAST_NAME"] = " ".join(names)
-
         # Make sure claims[settings.GROUPS_CLAIM] is always a list
         if settings.GROUPS_CLAIM in claims and not isinstance(
             claims[settings.GROUPS_CLAIM], list

@@ -147,8 +147,8 @@ ENTRA_AUTH = {
     "AUDIENCE": os.environ.get("ENTRA_CLIENT_ID", ""),
     # Map Entra ID claims to Django user fields
     "CLAIM_MAPPING": {
-        "first_name": "CLA_FIRST_NAME",
-        "last_name": "CLA_LAST_NAME",
+        "first_name": "given_name",
+        "last_name": "family_name",
         "email": "USER_EMAIL",
     },
     # Optional: Enable group synchronization

@@ -66,12 +66,9 @@ class TestEntraAuth(TestCase):
     @patch("django_entra_auth.backend.AdfsAuthCodeBackend.validate_access_token")
     def test_token_validation(self, mock_validate_access_token):
         mock_validate_access_token.return_value = {
-            "name": "[MOJ] [SILAS] Test User",
             "APP_ROLES": "CLA Admin - Contract Manager",
         }
         backend = EntraBackend()
         # We don't care about the access token value as we have mocked the return from super
         claims = backend.validate_access_token("access token")
-        self.assertEqual(claims["CLA_FIRST_NAME"], "Test")
-        self.assertEqual(claims["CLA_LAST_NAME"], "User")
         self.assertEqual(claims["APP_ROLES"], ["Contract Manager"])
