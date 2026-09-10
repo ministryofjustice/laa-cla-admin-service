@@ -29,7 +29,7 @@ runs:
       shell: bash
 
     - name: Run unit tests
-      run: pytest
+      run: python manage.py test apps
       shell: bash
       env:
         DATABASE_HOST: ${{ inputs.DB_HOST }}
