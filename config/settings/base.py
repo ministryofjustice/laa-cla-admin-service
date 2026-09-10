@@ -46,6 +46,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_entra_auth.middleware.LoginRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -156,4 +157,4 @@ ENTRA_AUTH = {
 }
 # Configure Django to use Entra ID login
 LOGIN_URL = "django_entra_auth:login"
-LOGIN_REDIRECT_URL = "/admin"
+LOGIN_REDIRECT_URL = "/"
