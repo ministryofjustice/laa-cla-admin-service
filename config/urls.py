@@ -15,19 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
 from django.urls import include, path
 
-from config.views import status
+from config.views import home, status
 
-admin.site.site_header = "Civil Legal Advice Administration"
-admin.site.site_title = "CLA Admin"
-admin.site.index_title = "Manage CLA services"
-
+from .admin import admin_site
 
 # `/admin` path should always be at the lowest priority to avoid conflicts with other apps that may use the `/admin` path.
 urlpatterns = [
+    path("", home, name="home"),
     path("admin/reports/", include("apps.reports.urls")),
-    path("admin/", admin.site.urls),
+    path("admin/", admin_site.urls),
     path("status", status, name="status"),
+    path("oauth2/", include("django_entra_auth.urls")),
 ]
