@@ -1,0 +1,22 @@
+import os
+
+os.environ.setdefault("DEBUG", "True")
+
+from .base import *
+
+
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "django-insecure-local-development-only",
+)
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DATABASE_NAME", "cla_admin"),
+        "USER": os.getenv("DATABASE_USER", "cla_admin"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD", "cla_admin"),
+        "HOST": os.getenv("DATABASE_HOST", "localhost"),
+        "PORT": os.getenv("DATABASE_PORT", "5433"),
+    }
+}

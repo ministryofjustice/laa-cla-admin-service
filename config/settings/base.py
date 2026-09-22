@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -34,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_entra_auth",
     "apps.cla_auth",
     "apps.reports",
 ]
@@ -46,6 +46,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_entra_auth.middleware.LoginRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -83,7 +84,6 @@ if AWS_STORAGE_BUCKET_NAME:
 
 
 WSGI_APPLICATION = "config.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -124,13 +124,38 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+# https://docs.djangoproject.com/en/6.1/ref/settings/#std-setting-SECURE_PROXY_SSL_HEADER
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+AUTHENTICATION_BACKENDS = ("apps.cla_auth.entra_backend.EntraBackend",)
+ENTRA_AUTH = {
+    "BLOCK_GUEST_USERS": True,
+    "VERSION": "v2.0",
+    "SCOPES": os.environ.get("ENTRA_SCOPES", "").split(","),
+    "CLIENT_ID": os.environ.get("ENTRA_CLIENT_ID", ""),
+    "CLIENT_SECRET": os.environ.get("ENTRA_CLIENT_SECRET", ""),
+    "TENANT_ID": os.environ.get("ENTRA_TENANT_ID", ""),
+    "RELYING_PARTY_ID": os.environ.get("ENTRA_TENANT_ID", ""),
+    # The audience should be your application ID
+    "AUDIENCE": os.environ.get("ENTRA_CLIENT_ID", ""),
+    # Map Entra ID claims to Django user fields
+    "CLAIM_MAPPING": {
+        "first_name": "given_name",
+        "last_name": "family_name",
+        "email": "USER_EMAIL",
+    },
+    # Optional: Enable group synchronization
+    "GROUPS_CLAIM": "APP_ROLES",
+    "MIRROR_GROUPS": True,
+    "LOGIN_EXEMPT_URLS": ["/", "status"],
+}
+# Configure Django to use Entra ID login
+LOGIN_URL = "django_entra_auth:login"
+LOGIN_REDIRECT_URL = "/"

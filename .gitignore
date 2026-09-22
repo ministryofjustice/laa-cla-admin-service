@@ -84,3 +84,4 @@ Thumbs.db
 .python-version
 .direnv/
 .envrc
+config/settings/local.py
