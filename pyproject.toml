@@ -19,7 +19,7 @@ dependencies = [
 
 [project.optional-dependencies]
 development = [
-    "pre-commit==4.6.2",
+    "pre-commit==4.7.0",
     "pytest>=8,<9",
     "pytest>=8,<10",
     "pytest-django>=4.11,<5",
