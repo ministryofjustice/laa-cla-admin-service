@@ -101,9 +101,6 @@ class EntraBackend(AdfsAuthCodeBackend):
         roles = claims.get(settings.GROUPS_CLAIM, [])
         has_internal_role = any(role in INTERNAL_ROLES for role in roles)
 
-        print("Office codes:", office_codes)
-        print("Roles:", roles)
-
         # Empty accounts pass only for internal roles
         if not office_codes and not has_internal_role:
             raise PermissionDenied("Internal role required")
