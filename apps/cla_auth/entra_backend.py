@@ -5,6 +5,8 @@ from django.core.exceptions import PermissionDenied
 from django_entra_auth.backend import AdfsAuthCodeBackend
 from django_entra_auth.config import settings
 
+from apps.cla_auth.constants import ALLOWED_OFFICE_CODE, INTERNAL_ROLES
+
 
 class EntraBackend(AdfsAuthCodeBackend):
     def create_user(self, claims):
@@ -82,7 +84,33 @@ class EntraBackend(AdfsAuthCodeBackend):
         for role in claims.get(settings.GROUPS_CLAIM, []):
             _, role_name = role.split(" - ")
             roles.append(role_name)
+
         if roles:
             claims[settings.GROUPS_CLAIM] = roles
 
+        self.check_user_access(claims)
+
         return claims
+
+    @staticmethod
+    def check_user_access(claims):
+        office_codes = claims.get("LAA_ACCOUNTS") or []
+        if isinstance(office_codes, str):
+            office_codes = [office_codes]
+
+        roles = claims.get(settings.GROUPS_CLAIM, [])
+        has_internal_role = any(role in INTERNAL_ROLES for role in roles)
+
+        print("Office codes:", office_codes)
+        print("Roles:", roles)
+
+        # Empty accounts pass only for internal roles
+        if not office_codes and not has_internal_role:
+            raise PermissionDenied("Internal role required")
+
+        if not has_internal_role and office_codes:
+            for code in office_codes:
+                if code not in ALLOWED_OFFICE_CODE:
+                    raise PermissionDenied("Office code not allowed")
+
+        return True

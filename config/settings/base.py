@@ -152,7 +152,7 @@ ENTRA_AUTH = {
         "email": "USER_EMAIL",
     },
     # Optional: Enable group synchronization
-    "GROUPS_CLAIM": "APP_ROLES",
+    "GROUPS_CLAIM": "LAA_APP_ROLES",
     "MIRROR_GROUPS": True,
     "LOGIN_EXEMPT_URLS": ["/", "status"],
 }

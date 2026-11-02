@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 
+from apps.cla_auth.constants import ExternalRole, InternalRole
 from apps.cla_auth.entra_backend import EntraBackend
 
 TENANT_ID = "0000-0000-0000-0000"
@@ -63,12 +64,50 @@ class TestEntraAuth(TestCase):
         ):
             backend.create_user(claims)
 
+    @patch("apps.cla_auth.entra_backend.settings.GROUPS_CLAIM", "LAA_APP_ROLES")
     @patch("django_entra_auth.backend.AdfsAuthCodeBackend.validate_access_token")
     def test_token_validation(self, mock_validate_access_token):
         mock_validate_access_token.return_value = {
-            "APP_ROLES": "CLA Admin - Contract Manager",
+            "LAA_APP_ROLES": f"CLA Admin - {InternalRole.CONTRACT_MANAGER.value}",
         }
         backend = EntraBackend()
         # We don't care about the access token value as we have mocked the return from super
         claims = backend.validate_access_token("access token")
-        self.assertEqual(claims["APP_ROLES"], ["Contract Manager"])
+        self.assertEqual(claims["LAA_APP_ROLES"], [InternalRole.CONTRACT_MANAGER.value])
+
+    @patch("apps.cla_auth.entra_backend.settings.GROUPS_CLAIM", "LAA_APP_ROLES")
+    @patch("django_entra_auth.backend.AdfsAuthCodeBackend.validate_access_token")
+    def test_empty_laa_accounts_without_contract_manager_is_denied(
+        self, mock_validate_access_token
+    ):
+        mock_validate_access_token.return_value = {
+            "LAA_APP_ROLES": "CLA Admin - Case Worker",
+            "LAA_ACCOUNTS": [],
+        }
+        backend = EntraBackend()
+        with self.assertRaisesRegex(PermissionDenied, "Internal role required"):
+            backend.validate_access_token("access token")
+
+    @patch("apps.cla_auth.entra_backend.settings.GROUPS_CLAIM", "LAA_APP_ROLES")
+    @patch("django_entra_auth.backend.AdfsAuthCodeBackend.validate_access_token")
+    def test_empty_laa_accounts_with_contract_manager_is_allowed(
+        self, mock_validate_access_token
+    ):
+        mock_validate_access_token.return_value = {
+            "LAA_APP_ROLES": f"CLA Admin - {InternalRole.CONTRACT_MANAGER.value}",
+            "LAA_ACCOUNTS": [],
+        }
+        backend = EntraBackend()
+        claims = backend.validate_access_token("access token")
+        self.assertEqual(claims["LAA_APP_ROLES"], [InternalRole.CONTRACT_MANAGER.value])
+
+    @patch("apps.cla_auth.entra_backend.settings.GROUPS_CLAIM", "LAA_APP_ROLES")
+    @patch("django_entra_auth.backend.AdfsAuthCodeBackend.validate_access_token")
+    def test_laa_accounts_with_invalid_code(self, mock_validate_access_token):
+        mock_validate_access_token.return_value = {
+            "LAA_APP_ROLES": f"CLA Admin - {ExternalRole.CASE_WORKER.value}",
+            "LAA_ACCOUNTS": ["003"],
+        }
+        backend = EntraBackend()
+        with self.assertRaisesRegex(PermissionDenied, "Office code not allowed"):
+            backend.validate_access_token("access token")
